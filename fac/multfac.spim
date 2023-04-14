@@ -1,0 +1,55 @@
+multfac:
+	li $t0, 0	
+	li $s0, 0 	
+
+	li $t3, 1	
+	sll $t3, $t3, 31	
+
+	li $t4, 32	
+	li $t5, 1	
+
+loop:
+	beq $t0, $t4, sair	
+	addi $t0, $t0, 1	
+
+	andi $t1, $a1, 1		
+	beq $t1, $t5, lsbValeUm
+
+	srl $s0, $s0, 1
+	srl $a1, $a1, 1		
+	
+	j loop	
+
+lsbValeUm:
+	add $s0, $s0, $a0	
+	srl $a1, $a1, 1		
+	andi $t2, $s0, 1		
+
+	beq $t2, 1, case1	
+
+	srl $s0, $s0, 1		
+
+	j loop
+
+case1:
+	add $a1, $a1, $t3	
+	srl $s0, $s0, 1		
+
+	j loop
+
+sair:
+	xor $t6, $a0, $a1	
+
+	blt $t6, $zero, diferentes	
+sair2:
+
+	mthi $s0	
+	mtlo $a1	
+
+	jr $ra		
+
+diferentes:	
+	nor $a1, $a1, $zero
+	addi $a1, $a1, 1
+
+	j sair2	

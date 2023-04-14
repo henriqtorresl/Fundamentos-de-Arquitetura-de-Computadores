@@ -1,0 +1,50 @@
+.data
+quebra_linha: .asciiz "\n"
+.text
+main:
+ addi $v0, $0, 5 # system call #5 - input int
+ syscall # execute
+ add $a0, $zero, $v0 # $a0 = $zero + $v0
+ jal bitparidade # jump to bitparidade and save position to $ra
+ j exit # jump to exit
+bitparidade:
+ addi $t2, $zero, 7 # $t2 = $t2 + 7
+ addi $t1, $zero, 0 # $t1 = $zero + 0
+ addi $t4, $zero, 2 # $t4 = $zero + 2
+ addi $v0, $zero, 0 # $v0 = $zero + 0
+ add $v1, $zero, $a0 # $v1 = $zero + $a0
+loop:
+ addi $t2, $t2, -1 # $t2 = $t2 - 1
+ blt $t2, $zero, paridade # if $t2 == $zero then goto return
+ andi $t0, $a0, 1 # $t0 = $t1 & 1
+ srl $a0, $a0, 1 # $a0 = $a0 << 1
+ bne $t0, $zero, count # if $t0 != $zero then goto target
+ j loop
+count:
+ addi $t1, $t1, 1 # $t1 = $t1 + 1
+ j loop
+paridade:
+ div $t1, $t4 # $t1 / 2
+ mfhi $t3 # $t3 = $t1 % 2
+ beq $t3, $zero, return # if $t3 == $zero then goto return
+ addi $v1, $v1, 128 # $v1 = $v1 + 128
+ addi $v0, $zero, 1 # $v0 = $zero + 1
+return:
+ jr $ra
+exit:
+ move $t0, $v0 # $t0 = $v0
+ move $t1, $v1 # $t1 = $v1
+ addi $v0, $0, 1 # system call #1 - print int
+ add $a0, $0, $t0
+ syscall # execute
+ li $v0, 4 # system call #4 - print string
+ la $a0, quebra_linha
+ syscall # execute
+ addi $v0, $0, 1 # system call #1 - print int
+ add $a0, $0, $t1
+ syscall # execute
+ li $v0, 4 # system call #4 - print string
+ la $a0, quebra_linha
+ syscall # execute
+ li $v0, 10 # exit
+ syscall 

@@ -1,0 +1,21 @@
+multfac:
+	li $t0, 0 # inicialize a variável de acumulação com 0
+	li $t1, 1 # inicialize a contagem de deslocamento com 1
+
+loop:
+	beq $t1, 32, end # verifique se a contagem de deslocamento é igual a 32
+	add $t1, $t1, 1	 # $t1++
+	add $t2, $t1, $t1 # dobre a contagem de deslocamento
+	sll $t3, $a1, $t2 # desloque o multiplicador à esquerda
+	bge $a0, 0, positive # verifique se o multiplicando é positivo ou negativo
+	neg $t3, $t3 # mude o sinal do deslocamento do multiplicador
+	add $t0, $t0, $t3 # adicione o deslocamento do multiplicador ao acumulador
+	j loop
+positive:
+	add $t0, $t0, $t3 # adicione o deslocamento do multiplicador ao acumulador
+	j loop
+
+end:
+	mflo $v0 # mova o acumulador para o registrador lo
+	mfhi $v1 # mova o carry para o registrador hi
+	jr $ra # retorne ao endereço de retorno

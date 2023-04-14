@@ -1,0 +1,21 @@
+.data
+
+.text
+main:
+	li $v0, 5		# ler um inteiro
+	syscall
+	move $t1, $v0		# $t1 = $v0
+
+	li $v0, 5		# ler um inteiro
+	syscall
+	move $t2, $v0		# $t2 = $v0
+
+	add $t0, $t1, $t2	# $t0 = $t1 + $t2
+	
+	li $v0, 1		# imprimir um inteiro
+	move $a0, $t0		# quero imprimir o $t0, OBS.: qnd estou trabalhando com registradores tenho que usar o "move" e nn o "la"
+	syscall
+
+	li $v0, 10		# encerrar o programa
+	syscall
+	

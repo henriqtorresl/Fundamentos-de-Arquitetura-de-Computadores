@@ -1,0 +1,51 @@
+multfac:
+	li $t0, 0	
+	li $t1, 31	
+	li $t4, 1
+	sll $t4, $t4, 31	 
+	li $s0, 0	
+
+loop:
+	beq $t0, $t1, end
+	addi $t0, $t0, 1		
+
+	andi $t2, $a1, 1	
+	andi $t3, $a0, 1	
+
+	bne $t2, $zero, lsbIsOne
+
+	srl $s0, $s0, 1
+	srl $a1, $a1, 1
+	bne $t3, $zero, tratamento	
+
+	j loop
+
+lsbIsOne:
+	add $s0, $s0, $a0 		
+
+	srl $s0, $s0, 1	
+	srl $a1, $a1, 1		
+	bne $t3, $zero, tratamento
+
+	j loop
+
+tratamento:	
+	add $a1, $a1, $t4 	
+
+	j loop
+
+end:
+	xor $t5, $a0, $a1
+	blt $t5, $zero, negarP		
+return:
+	mthi $s0
+	mtlo $a1
+	
+	jr $ra		
+
+negarP:		
+	nor $s0, $s0, $zero
+	nor $a1, $a1, $zero
+	addi $a1, $a1, 1
+	
+	j return

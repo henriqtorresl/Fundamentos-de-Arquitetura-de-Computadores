@@ -1,0 +1,24 @@
+.data
+	quebraDeLinha: .asciiz "\n"
+.text
+main:
+	li $v0, 5		# comando para ler um inteiro
+	syscall
+	move $t1, $v0		# $t1 = $v0
+
+	li $v0, 5
+	syscall
+	move $t2, $v0		# $t2 = $v0
+	
+	sub $t0, $t1, $t2	# $t0 = $t1 - $t2
+
+	li $v0, 1		# comando para printar um inteiro
+	move $a0, $t0		# carreguei o argumento com um inteiro
+	syscall
+
+	li $v0, 4		# comando para printar um carcter ou uma string
+	la $a0, quebraDeLinha   # carreguei o argumento com uma string
+	syscall
+
+	li $v0, 10		# comando para encerrar o programa
+	syscall

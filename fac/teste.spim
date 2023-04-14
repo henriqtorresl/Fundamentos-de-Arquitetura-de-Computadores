@@ -1,0 +1,33 @@
+divfac:
+    # Armazene os valores de a0 e a1 em regsitros temporários
+    add $t0, $zero, $a0 # $t0 = dividendo
+    add $t1, $zero, $a1 # $t1 = divisor
+
+    # Determine o sinal do resultado
+    xor $t2, $t0, $t1 # $t2 = sinal do resultado
+    srl $t2, $t2, 31  # $t2 = sinal do resultado (0 para positivo, 1 para negativo)
+
+    # Faça o valor absoluto dos operandos
+    slt $t3, $t0, $zero # $t3 = 1 se $t0 < 0, 0 caso contrário
+    beq $t3, $zero, abs_dividendo_done # salta para abs_dividendo_done se $t0 >= 0
+    sub $t0, $zero, $t0 # $t0 = |$t0|
+    abs_dividendo_done:
+    slt $t3, $t1, $zero # $t3 = 1 se $t1 < 0, 0 caso contrário
+    beq $t3, $zero, abs_divisor_done # salta para abs_divisor_done se $t1 >= 0
+    sub $t1, $zero, $t1 # $t1 = |$t1|
+    abs_divisor_done:
+
+    # Execute a divisão inteira
+    div $t0, $t1  # $lo = $t0 / $t1, $hi = $t0 % $t1
+
+    # Aplique o sinal ao resultado se necessário
+    slt $t3, $t0, $zero # $t3 = 1 se $t0 < 0, 0 caso contrário
+    bne $t3, $t2, apply_sign # salta para apply_sign se $t0 e $t2 têm sinais diferentes
+    add $lo, $zero, $lo # $lo = $lo
+    add $hi, $zero, $hi # $hi = $hi
+    j done
+    apply_sign:
+    sub $lo, $zero, $lo # $lo = -$lo
+    sub $hi, $zero, $hi # $hi = -$hi
+    done:
+    jr $ra # retorna

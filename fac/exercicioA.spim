@@ -1,0 +1,49 @@
+.data
+
+.text
+	main:
+		jal informeInteiro	# esse input é para saber a quantidade de números que vão ser lidos
+
+		move $t0, $v0		# $t0 = $v0 -> em $t0 vai ficar armazenado a quantidade de números que vai ser lido
+
+		jal informeInteiro	# esse vai ser o meu primeiro input
+		move $t1, $v0		# $t1 = $t0
+
+		move $t2, $zero		# $t2 será o meu iterator
+		
+		addi $t0, $t0, -1	# estou diminuindo por 1, pois eu fiz um input fora do laço...
+
+		while:			# enquanto $t2 não for igual a $t0 eu continuo executando o codigo
+			beq $t0, $t2, sair
+			jal informeInteiro
+	
+			addi $t2, $t2, 1	# $t2++
+			
+			bgt $v0, $t1, maior
+
+			j while
+
+			maior:
+				move $t1, $v0
+				j while
+		sair:	
+			move $a0, $t1		# agora o maior valor está armazenado no $a0
+			jal imprimirInteiro
+			jal encerraPrograma
+
+		# função que pede um inteiro ao usuario e esse int fica armazenado em $v0
+		informeInteiro:
+			li $v0, 5
+			syscall
+			jr $ra
+
+		# função que encerra o programa
+		encerraPrograma:
+			li $v0, 10
+			syscall
+		
+		# função que imprime um inteiro -> vai imprimir o valor que estiver no $a0
+		imprimirInteiro:
+			li $v0, 1
+			syscall
+			jr $ra

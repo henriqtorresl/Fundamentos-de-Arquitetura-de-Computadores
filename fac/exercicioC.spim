@@ -1,0 +1,85 @@
+# $t2 = coontador2
+# $t1 = coontador
+# $s0 = numero de linhas
+# # Tenho certeza que tinha uma forma mais otimizada de ser feito, mas ano novo entao preguica
+.data
+	quebra_linha: .asciiz "\n"
+	espaco: .asciiz " "
+.text
+	main:
+		addi $v0, $0, 5 # system call #5 - input int
+		syscall # execute
+		move $s0, $v0 # $s0 = $v0 = numero de linhas
+		# first piramid
+ 		move $t1, $zero # $t1 = 0 = contador
+		
+		whileLinha:
+ 		move $t2, $zero # $t2 = $zero
+ 		addi $t1, $t1, 1 # $t1 = $t1 + 1 -> Adicionando cont
+ 		bgt $t1, $s0, secondPiramid # if contador > numero de linhas th
+		
+		whileColuna:
+ 		beq $t2, $t1, endWhileColuna # se o contador 2 for igual a conta
+ 		move $a1, $t1 # $a1 = $t1
+ 		jal zeroing # jump to zeroing and save position
+		addi $v0, $0, 1 # system call #1 - print int	
+		add $a0, $0, $t1
+ 		syscall # execute
+ 		addi $t2, $t2, 1 # $t2 = $t2 + 1
+ 		addi $v0, $0, 4 # system call #4 - print string
+ 		la $a0, espaco
+ 		syscall # execute
+ 		j whileColuna
+
+		endWhileColuna:
+ 		li $v0, 4 # system call #4 - print string
+ 		la $a0, quebra_linha
+ 		syscall # execute
+ 		j whileLinha # loop back
+
+		# second piramid
+		secondPiramid:
+ 		li $v0, 4 # system call #4 - print string
+ 		la $a0, quebra_linha
+ 		syscall # execute
+ 		move $t1, $zero # $t1 = 0 = contador
+
+		whileSecondPiramidLinha:
+ 		move $t2, $zero # $t2 = $zero
+ 		addi $t1, $t1, 1 # $t1 = $t1 + 1 -> Adicionando cont
+ 		bgt $t1, $s0, exit # if contador > numero de linhas th
+
+		whileSecondPiramidColuna:
+ 		addi $t2, $t2, 1 # $t2 = $t2 + 1
+ 		bgt $t2, $t1, endWhileSecondPiramidColuna # se o contador 2 for maior que con
+ 		move $a1, $t2 # $a1 = $t2
+ 		jal zeroing # jump to zeroing and save position
+ 		addi $v0, $0, 1 # system call #1 - print int
+ 		add $a0, $0, $t2
+ 		syscall # execute
+ 		addi $v0, $0, 4 # system call #4 - print string
+ 		la $a0, espaco
+ 		syscall # execute
+ 		j whileSecondPiramidColuna
+		endWhileSecondPiramidColuna:
+ 		li $v0, 4 # system call #4 - print string
+ 		la $a0, quebra_linha
+ 		syscall # execute
+ 		j whileSecondPiramidLinha # loop back
+
+		zeroing:
+ 		addi $t0, $zero, 10 # $t0 = $zero + 10
+ 		bge $a1, $t0, return # if a1 >= 10 then goto target
+ 		addi $v0, $0, 1 # system call #1 - print int
+ 		add $a0, $0, $zero
+ 		syscall # execute
+
+		return:
+ 		jr $ra # jump to $ra
+
+		exit:
+ 		li $v0, 4 # system call #4 - print string
+ 		la $a0, quebra_linha
+ 		syscall # execute
+ 		li $v0, 10 # exit
+ 		syscall 

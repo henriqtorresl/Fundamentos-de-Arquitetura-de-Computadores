@@ -1,0 +1,51 @@
+# s3 = fator de multiplicacao de preco
+# s2 = caso base
+# s1 = consumo declarado
+# s0 = resultado
+.data
+quebra_linha: .asciiz "\n"
+.text
+main:
+ addi $v0, $0, 5 # system call #5 - input int
+ syscall # execute
+ move $s1, $v0 # $s1 = $v0 = consumo declarado
+# inicializando resultado e var aux
+ move $s0, $zero # $s0 = $zero
+ move $t7, $zero # $t7 = $zero
+ addi $s2, $zero, 10 # $s2 = 10 = caso base
+# caso base
+ ble $s1, $s2, casoBase # if $s1 <= $s2 casoBase
+# settando valores para as branches
+ addi $t0, $zero, 10 # $t0 = $zero + 10
+ addi $t1, $zero, 30 # $t1 = $zero + 30
+ addi $t2, $zero, 100 # $t2 = $zero + 100
+while:
+ beq $s1, $s2, casoBase # if $t0 == $t1 then goto target
+ jal setValue # jump to set_value and save position to $ra
+ add $s0, $s0, $s3 # calculando preco
+ addi $s1, $s1, -1 # $s1 = $s1 - 1
+ j while # loop back
+faixa11a30:
+ addi $s3, $zero, 1 # $t0 = $zero + 1
+ jr $ra # jump to $ra
+faixa31a100:
+ addi $s3, $zero, 2 # $t0 = $zero + 2
+ jr $ra # jump to $ra
+faixa101:
+ addi $s3, $zero, 5 # $t0 = $zero + 5
+ jr $ra # jump to $ra
+setValue:
+ ble $s1, $t1, faixa11a30 # if consumo declarado <= 30 then goto faixa11a30
+ ble $s1, $t2, faixa31a100 # if consumo declarado <= 100 then goto faixa31a100
+ bgt $s1, $t2, faixa101 # if $s1 > $t2 then goto faixa101
+casoBase:
+ addi $s0, $s0, 7 # $s0 = $s0 + 7
+exit:
+ addi $v0, $0, 1 # system call #1 - print int
+ add $a0, $0, $s0
+ syscall # execute
+ li $v0, 4 # system call #4 - print string
+ la $a0, quebra_linha
+ syscall # execute
+ li $v0, 10 # exit
+ syscall
